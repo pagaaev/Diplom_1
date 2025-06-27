@@ -20,7 +20,6 @@ public class BurgerTest {
     public void setup() {
         burger = new Burger();
 
-        // Создаем моки вместо реальных объектов
         bun = mock(Bun.class);
         when(bun.getName()).thenReturn("Test Bun");
         when(bun.getPrice()).thenReturn(50f);
@@ -37,38 +36,51 @@ public class BurgerTest {
     }
 
     @Test
-    public void testSetBuns() {
+    public void testSetBunsAssignsBun() {
         burger.setBuns(bun);
         assertEquals(bun, burger.bun);
     }
 
     @Test
-    public void testAddIngredient() {
+    public void testAddIngredientAddsToList() {
         burger.addIngredient(ingredient1);
         assertTrue(burger.ingredients.contains(ingredient1));
     }
 
     @Test
-    public void testRemoveIngredient() {
+    public void testRemoveIngredientRemovesCorrectIngredient() {
         burger.addIngredient(ingredient1);
         burger.addIngredient(ingredient2);
         burger.removeIngredient(0);
         assertFalse(burger.ingredients.contains(ingredient1));
+    }
+
+    @Test
+    public void testRemoveIngredientDecreasesSize() {
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+        burger.removeIngredient(0);
         assertEquals(1, burger.ingredients.size());
     }
 
     @Test
-    public void testMoveIngredient() {
+    public void testMoveIngredientUpdatesFirstPosition() {
         burger.addIngredient(ingredient1);
         burger.addIngredient(ingredient2);
         burger.moveIngredient(0, 1);
-        List<Ingredient> ingr = burger.ingredients;
-        assertEquals(ingredient2, ingr.get(0));
-        assertEquals(ingredient1, ingr.get(1));
+        assertEquals(ingredient2, burger.ingredients.get(0));
     }
 
     @Test
-    public void testGetPrice() {
+    public void testMoveIngredientUpdatesSecondPosition() {
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+        burger.moveIngredient(0, 1);
+        assertEquals(ingredient1, burger.ingredients.get(1));
+    }
+
+    @Test
+    public void testGetPriceReturnsCorrectValue() {
         burger.setBuns(bun);
         burger.addIngredient(ingredient1);
         burger.addIngredient(ingredient2);
@@ -77,17 +89,47 @@ public class BurgerTest {
     }
 
     @Test
-    public void testGetReceipt() {
+    public void testGetReceiptContainsBunName() {
         burger.setBuns(bun);
         burger.addIngredient(ingredient1);
         burger.addIngredient(ingredient2);
-
         String receipt = burger.getReceipt();
-
         assertTrue(receipt.contains(bun.getName()));
+    }
+
+    @Test
+    public void testGetReceiptContainsIngredient1Type() {
+        burger.setBuns(bun);
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+        String receipt = burger.getReceipt();
         assertTrue(receipt.toLowerCase().contains(ingredient1.getType().toString().toLowerCase()));
+    }
+
+    @Test
+    public void testGetReceiptContainsIngredient1Name() {
+        burger.setBuns(bun);
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+        String receipt = burger.getReceipt();
         assertTrue(receipt.contains(ingredient1.getName()));
+    }
+
+    @Test
+    public void testGetReceiptContainsIngredient2Name() {
+        burger.setBuns(bun);
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+        String receipt = burger.getReceipt();
         assertTrue(receipt.contains(ingredient2.getName()));
+    }
+
+    @Test
+    public void testGetReceiptContainsTotalPrice() {
+        burger.setBuns(bun);
+        burger.addIngredient(ingredient1);
+        burger.addIngredient(ingredient2);
+        String receipt = burger.getReceipt();
         assertTrue(receipt.contains(String.format("%f", burger.getPrice())));
     }
 }

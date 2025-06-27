@@ -2,9 +2,12 @@ package praktikum;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class BurgerTest {
 
@@ -16,9 +19,21 @@ public class BurgerTest {
     @BeforeEach
     public void setup() {
         burger = new Burger();
-        bun = new Bun("Test Bun", 50f);
-        ingredient1 = new Ingredient(IngredientType.SAUCE, "Sauce 1", 20f);
-        ingredient2 = new Ingredient(IngredientType.FILLING, "Filling 1", 30f);
+
+        // Создаем моки вместо реальных объектов
+        bun = mock(Bun.class);
+        when(bun.getName()).thenReturn("Test Bun");
+        when(bun.getPrice()).thenReturn(50f);
+
+        ingredient1 = mock(Ingredient.class);
+        when(ingredient1.getType()).thenReturn(IngredientType.SAUCE);
+        when(ingredient1.getName()).thenReturn("Sauce 1");
+        when(ingredient1.getPrice()).thenReturn(20f);
+
+        ingredient2 = mock(Ingredient.class);
+        when(ingredient2.getType()).thenReturn(IngredientType.FILLING);
+        when(ingredient2.getName()).thenReturn("Filling 1");
+        when(ingredient2.getPrice()).thenReturn(30f);
     }
 
     @Test
@@ -57,7 +72,6 @@ public class BurgerTest {
         burger.setBuns(bun);
         burger.addIngredient(ingredient1);
         burger.addIngredient(ingredient2);
-        // price = bun*2 + ingredient1 + ingredient2
         float expected = bun.getPrice() * 2 + ingredient1.getPrice() + ingredient2.getPrice();
         assertEquals(expected, burger.getPrice());
     }
